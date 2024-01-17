@@ -1,6 +1,7 @@
 const request = require('supertest')
 // const express = require('express')
-const createApp = require('../src/app.js')
+const createApp = require('../src/app.js');
+const { models } = require('../src/db/sequelize.js');
 
 
 describe('test for /users path', () => {
@@ -8,14 +9,23 @@ describe('test for /users path', () => {
   let server = null;
   let api = null;
 
-  beforeEach(() => {
+  beforeAll(() => {
     app = createApp();
     server = app.listen(8000)
     api = request(app)
   });
 
-  describe('GET /users', () => {
-    // Test for get users
+  describe('GET /users/{id}', () => {
+    test('should return a user', async () => {
+      const user = await models.User.findByPk('1')
+      // const inputId = '1'
+      const { statusCode, body } = await api.get(`/api/v1/users/${user.id}`)
+      expect(statusCode).toEqual(200)
+      expect(body.id).toEqual(user.id)
+      expect(body.email).toEqual(user.email)
+
+    });
+
   });
 
   describe('POST /users', () => {
@@ -46,7 +56,7 @@ describe('test for /users path', () => {
     // Test for get users
   });
 
-  afterEach(() => {
+  afterAll(() => {
     server.close()
   });
 });
