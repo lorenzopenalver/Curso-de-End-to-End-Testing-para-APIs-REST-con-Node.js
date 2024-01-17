@@ -37,9 +37,8 @@ describe('test for /users path', () => {
       const { statusCode , body} = await api.post('/api/v1/users').send(inputData)
       expect(statusCode).toBe(400);
       expect(body.message).toMatch(/email/);
-
     });
-  describe('POST /users', () => {
+
     test('should return a 400 for password', async () => {
       const inputData = {
         email: 'admin@mail.com',
@@ -48,8 +47,21 @@ describe('test for /users path', () => {
       const { statusCode , body} = await api.post('/api/v1/users').send(inputData)
       expect(statusCode).toBe(400);
       expect(body.message).toMatch(/password/);
-
     });
+    test('should return a new user', async () => {
+      const inputData = {
+        email: 'pepito222@gmail.com',
+        password: 'admin123'
+      }
+      const { statusCode , body} = await api.post('/api/v1/users').send(inputData)
+      expect(statusCode).toBe(201);
+      // Check DB
+      const user = await models.User.findByPk(body.id)
+      expect(user).toBeTruthy();
+      expect(user.role).toEqual('admin');
+      expect(user.email).toEqual(inputData.email);
+    });
+
   });
 
   describe('PUT /users', () => {
@@ -59,6 +71,5 @@ describe('test for /users path', () => {
   afterAll(() => {
     server.close()
   });
-});
 
 })
