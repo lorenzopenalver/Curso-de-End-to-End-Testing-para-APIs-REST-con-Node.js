@@ -2,7 +2,7 @@ const request = require('supertest')
 // const express = require('express')
 const createApp = require('../src/app.js');
 const { models } = require('../src/db/sequelize.js');
-const { upSeed, downSeed } = require('./utils/seed.js');
+const { upSeed, downSeed } = require('./utils/umzug.js');
 
 
 
